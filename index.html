@@ -12,88 +12,105 @@
             font-family: 'JetBrains Mono', monospace;
             background-color: #050505;
             color: #d1d5db;
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden;
         }
-        ::selection {
+        ::selection { background-color: #dc2626; color: white; }
+        
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed; top: 0; left: 0;
+            width: 24px; height: 24px;
+            border: 1px solid rgba(220, 38, 38, 0.5);
+            pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            mix-blend-mode: difference;
+        }
+        .custom-cursor.hover {
+            width: 40px; height: 40px;
+            background-color: rgba(220, 38, 38, 0.1);
+            border-color: rgba(220, 38, 38, 0.8);
+        }
+        .cursor-dot {
+            position: fixed; top: 0; left: 0;
+            width: 4px; height: 4px;
             background-color: #dc2626;
-            color: white;
+            pointer-events: none; z-index: 10000;
+            transform: translate(-50%, -50%);
         }
-        .glitch-text {
+
+        /* Glow Card Effect (Mouse Tracking) */
+        .glow-card {
             position: relative;
+            overflow: hidden;
         }
-        .glitch-text::before,
-        .glitch-text::after {
-            content: attr(data-text);
+        .glow-card::before {
+            content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(220, 38, 38, 0.15), transparent 40%);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .glow-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Typing & Glitch Animation */
+        .typing-container {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid #dc2626;
+            animation: typing 2s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #dc2626; } }
+
+        .glitch-text { position: relative; display: inline-block; }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         }
         .glitch-text::before {
-            left: 2px;
-            text-shadow: -1px 0 red;
-            clip: rect(24px, 550px, 90px, 0);
+            left: 2px; text-shadow: -1px 0 red; clip: rect(24px, 550px, 90px, 0);
             animation: glitch-anim 2s infinite linear alternate-reverse;
         }
         .glitch-text::after {
-            left: -2px;
-            text-shadow: -1px 0 blue;
-            clip: rect(85px, 550px, 140px, 0);
+            left: -2px; text-shadow: -1px 0 blue; clip: rect(85px, 550px, 140px, 0);
             animation: glitch-anim 2.5s infinite linear alternate-reverse;
         }
         @keyframes glitch-anim {
             0% { clip: rect(74px, 9999px, 81px, 0); }
-            5% { clip: rect(31px, 9999px, 45px, 0); }
-            10% { clip: rect(66px, 9999px, 20px, 0); }
-            15% { clip: rect(100px, 9999px, 83px, 0); }
             20% { clip: rect(96px, 9999px, 81px, 0); }
-            25% { clip: rect(67px, 9999px, 45px, 0); }
-            30% { clip: rect(81px, 9999px, 92px, 0); }
-            35% { clip: rect(52px, 9999px, 78px, 0); }
             40% { clip: rect(15px, 9999px, 77px, 0); }
-            45% { clip: rect(21px, 9999px, 84px, 0); }
-            50% { clip: rect(17px, 9999px, 85px, 0); }
-            55% { clip: rect(70px, 9999px, 95px, 0); }
             60% { clip: rect(4px, 9999px, 89px, 0); }
-            65% { clip: rect(85px, 9999px, 92px, 0); }
-            70% { clip: rect(84px, 9999px, 32px, 0); }
-            75% { clip: rect(44px, 9999px, 5px, 0); }
             80% { clip: rect(25px, 9999px, 12px, 0); }
-            85% { clip: rect(70px, 9999px, 53px, 0); }
-            90% { clip: rect(10px, 9999px, 55px, 0); }
-            95% { clip: rect(48px, 9999px, 66px, 0); }
             100% { clip: rect(87px, 9999px, 57px, 0); }
         }
-        
+
         .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.2) 50%,
-                rgba(0,0,0,0.2)
-            );
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.15;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px; pointer-events: none; z-index: 50; opacity: 0.15;
         }
     </style>
 </head>
 <body class="p-4 md:p-8 relative">
+    <!-- Custom Cursors -->
+    <div class="custom-cursor hidden md:block"></div>
+    <div class="cursor-dot hidden md:block"></div>
+
     <div class="scanlines"></div>
 
     <div class="max-w-6xl mx-auto relative z-10">
-        <!-- Top Navigation / Terminal Header -->
-        <nav class="flex justify-between items-center border-b border-red-900/30 pb-4 mb-12 text-xs uppercase tracking-widest text-red-500">
+        <!-- HEADER -->
+        <nav class="flex justify-between items-center border-b border-red-900/30 pb-4 mb-12 text-xs uppercase tracking-widest text-red-500 hover-trigger">
             <div class="flex items-center gap-2">
                 <i data-lucide="terminal" class="w-4 h-4"></i>
-                <span>System.Init()</span>
+                <span class="typing-container" style="animation: none; border:none;">System.Init()</span>
             </div>
             <div class="flex items-center gap-4">
                 <span class="hidden sm:inline">Location: Bengaluru, India</span>
@@ -101,15 +118,16 @@
             </div>
         </nav>
 
-        <!-- HERO SECTION -->
+        <!-- HERO -->
         <header class="mb-24 flex flex-col-reverse md:flex-row justify-between items-start md:items-center gap-8">
             <div class="flex-1">
-                <h2 class="text-red-600 text-sm md:text-lg mb-2 uppercase tracking-widest">System User Identification:</h2>
-                <h1 class="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-red-900 mb-6 uppercase tracking-tighter glitch-text" data-text="Soham Patil">
+                <div class="mb-2">
+                    <h2 class="text-red-600 text-sm md:text-lg uppercase tracking-widest typing-container">Hello, I'm</h2>
+                </div>
+                <h1 class="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-red-900 mb-6 uppercase tracking-tighter glitch-text hover-trigger" data-text="Soham Patil">
                     Soham Patil
                 </h1>
-                
-                <div class="border-l-2 border-red-600 pl-4 py-2 mb-6">
+                <div class="border-l-2 border-red-600 pl-4 py-2 mb-6 hover-trigger">
                     <p class="text-sm md:text-base max-w-2xl text-gray-300 leading-relaxed font-bold">
                         B.E. CSE @ Atria Institute of Technology
                     </p>
@@ -117,39 +135,32 @@
                         Full-Stack Developer & AI Enthusiast. Architecting autonomous systems, intuitive interfaces, and robust backend architectures.
                     </p>
                 </div>
-                
                 <div class="flex gap-4">
-                    <a href="https://github.com/nobitabot-sudo" target="_blank" class="flex items-center gap-2 text-xs border border-red-900/50 bg-red-950/20 px-4 py-2 hover:bg-red-900/40 hover:text-white transition-all text-red-400">
-                        <i data-lucide="github" class="w-4 h-4"></i> GitHub
+                    <a href="https://github.com/nobitabot-sudo" target="_blank" class="hover-trigger flex items-center gap-2 text-xs border border-red-900/50 bg-red-950/20 px-4 py-2 hover:bg-red-900/40 hover:text-white transition-all text-red-400 relative overflow-hidden group">
+                        <span class="relative z-10 flex items-center gap-2"><i data-lucide="github" class="w-4 h-4"></i> GitHub</span>
                     </a>
-                    <a href="mailto:sp5960701@gmail.com" class="flex items-center gap-2 text-xs border border-red-900/50 bg-red-950/20 px-4 py-2 hover:bg-red-900/40 hover:text-white transition-all text-red-400">
-                        <i data-lucide="mail" class="w-4 h-4"></i> Contact Protocol
+                    <a href="mailto:sp5960701@gmail.com" class="hover-trigger flex items-center gap-2 text-xs border border-red-900/50 bg-red-950/20 px-4 py-2 hover:bg-red-900/40 hover:text-white transition-all text-red-400 relative overflow-hidden group">
+                        <span class="relative z-10 flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> Contact Protocol</span>
                     </a>
                 </div>
             </div>
             
-            <!-- Image Placeholder -->
-            <div class="w-48 h-48 md:w-64 md:h-64 shrink-0 relative group">
+            <div class="w-48 h-48 md:w-64 md:h-64 shrink-0 relative group hover-trigger glow-card bg-[#0a0a0a]">
                 <div class="absolute -inset-2 border border-red-900/40 group-hover:border-red-500/80 transition-colors duration-500"></div>
                 <div class="absolute -inset-2 border border-red-900/40 group-hover:border-red-500/80 transition-colors duration-500 transform rotate-3"></div>
                 
-                <div class="w-full h-full bg-[#0a0a0a] border border-red-900/60 relative overflow-hidden flex flex-col items-center justify-center">
+                <div class="w-full h-full border border-red-900/60 relative overflow-hidden flex flex-col items-center justify-center z-10">
                     <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjMGEwYTBhIj48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDBMOCA4Wk04IDBMMCA4WiIgc3Ryb2tlPSIjM2YzZjNmIiBzdHJva2Utd2lkdGg9IjEiPjwvcGF0aD4KPC9zdmc+')] opacity-20"></div>
                     <i data-lucide="user" class="w-12 h-12 text-red-900 mb-2"></i>
                     <p class="text-[10px] text-red-500/70 text-center uppercase tracking-widest px-4 relative z-10">Image Data<br/>Missing</p>
                     <p class="text-[8px] text-gray-600 mt-4 relative z-10">Awaiting user_profile.jpg</p>
-                    
-                    <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-red-500"></div>
-                    <div class="absolute top-0 right-0 w-2 h-2 border-t border-r border-red-500"></div>
-                    <div class="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-red-500"></div>
-                    <div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-red-500"></div>
                 </div>
             </div>
         </header>
 
-        <!-- FLAGSHIP DEPLOYMENTS (TOP PROJECTS) -->
+        <!-- FLAGSHIP DEPLOYMENTS -->
         <section class="mb-24">
-            <div class="flex items-center gap-3 mb-10 border-b border-gray-800 pb-4">
+            <div class="flex items-center gap-3 mb-10 border-b border-gray-800 pb-4 hover-trigger">
                 <i data-lucide="server" class="text-red-500 w-5 h-5"></i>
                 <h2 class="text-xl md:text-2xl font-bold uppercase tracking-widest text-white">Flagship Deployments</h2>
                 <div class="flex-1 h-px bg-gradient-to-r from-red-900/50 to-transparent ml-4"></div>
@@ -157,19 +168,19 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Project 1: ReTrack AI -->
-                <div class="bg-[#0a0a0a] border border-red-900/30 hover:border-red-500/80 transition-all duration-300 p-6 group relative overflow-hidden flex flex-col h-full">
+                <div class="bg-[#0a0a0a] border border-red-900/30 hover:border-red-500/80 transition-all duration-300 p-6 group flex flex-col h-full glow-card hover-trigger">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-900 to-transparent transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
-                    <div class="flex justify-between items-start mb-4">
+                    <div class="flex justify-between items-start mb-4 relative z-10">
                         <span class="text-[10px] bg-red-950/40 text-red-500 px-2 py-1 border border-red-900/30 uppercase tracking-wider">Cypher 4.0</span>
                         <a href="https://github.com/nobitabot-sudo/backstocking" target="_blank" class="text-gray-500 hover:text-red-500 transition-colors">
                             <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
                         </a>
                     </div>
-                    <h3 class="text-xl text-white font-bold mb-3 group-hover:text-red-400 transition-colors">ReTrack AI</h3>
-                    <p class="text-xs text-gray-400 mb-6 flex-1">
+                    <h3 class="text-xl text-white font-bold mb-3 group-hover:text-red-400 transition-colors relative z-10">ReTrack AI</h3>
+                    <p class="text-xs text-gray-400 mb-6 flex-1 relative z-10">
                         Intelligent returns management dashboard built to maximize recovery value from returned inventory. Features Automated Financial Routing, Supplier Return Deadline Radar, and Batch Quality Alerts.
                     </p>
-                    <div class="flex flex-wrap gap-2 mt-auto border-t border-gray-800/50 pt-4">
+                    <div class="flex flex-wrap gap-2 mt-auto border-t border-gray-800/50 pt-4 relative z-10">
                         <span class="text-[10px] bg-black text-gray-400 px-2 py-1 rounded border border-gray-800">Python</span>
                         <span class="text-[10px] bg-black text-gray-400 px-2 py-1 rounded border border-gray-800">Streamlit</span>
                         <span class="text-[10px] bg-black text-gray-400 px-2 py-1 rounded border border-gray-800">Docker</span>
@@ -177,38 +188,38 @@
                 </div>
 
                 <!-- Project 2: Nova Assistant -->
-                <div class="bg-[#0a0a0a] border border-red-900/30 hover:border-red-500/80 transition-all duration-300 p-6 group relative overflow-hidden flex flex-col h-full">
+                <div class="bg-[#0a0a0a] border border-red-900/30 hover:border-red-500/80 transition-all duration-300 p-6 group flex flex-col h-full glow-card hover-trigger">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-900 to-transparent transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
-                    <div class="flex justify-between items-start mb-4">
+                    <div class="flex justify-between items-start mb-4 relative z-10">
                         <span class="text-[10px] bg-red-950/40 text-red-500 px-2 py-1 border border-red-900/30 uppercase tracking-wider">J.A.R.V.I.S Style</span>
                         <a href="https://github.com/nobitabot-sudo/nova-assistantNXS" target="_blank" class="text-gray-500 hover:text-red-500 transition-colors">
                             <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
                         </a>
                     </div>
-                    <h3 class="text-xl text-white font-bold mb-3 group-hover:text-red-400 transition-colors">Nova Assistant</h3>
-                    <p class="text-xs text-gray-400 mb-6 flex-1">
+                    <h3 class="text-xl text-white font-bold mb-3 group-hover:text-red-400 transition-colors relative z-10">Nova Assistant</h3>
+                    <p class="text-xs text-gray-400 mb-6 flex-1 relative z-10">
                         Personal, offline AI assistant for Android operating via Accessibility Service. Features "Bring your own AI" and on-device text-to-speech without requiring cloud logins.
                     </p>
-                    <div class="flex flex-wrap gap-2 mt-auto border-t border-gray-800/50 pt-4">
+                    <div class="flex flex-wrap gap-2 mt-auto border-t border-gray-800/50 pt-4 relative z-10">
                         <span class="text-[10px] bg-black text-gray-400 px-2 py-1 rounded border border-gray-800">Kotlin</span>
                         <span class="text-[10px] bg-black text-gray-400 px-2 py-1 rounded border border-gray-800">Accessibility API</span>
                     </div>
                 </div>
 
                 <!-- Project 3: NovaNest -->
-                <div class="bg-[#0a0a0a] border border-red-900/30 hover:border-red-500/80 transition-all duration-300 p-6 group relative overflow-hidden flex flex-col h-full">
+                <div class="bg-[#0a0a0a] border border-red-900/30 hover:border-red-500/80 transition-all duration-300 p-6 group flex flex-col h-full glow-card hover-trigger">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-900 to-transparent transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
-                    <div class="flex justify-between items-start mb-4">
+                    <div class="flex justify-between items-start mb-4 relative z-10">
                         <span class="text-[10px] bg-red-950/40 text-red-500 px-2 py-1 border border-red-900/30 uppercase tracking-wider">E-Commerce</span>
                         <a href="https://github.com/nobitabot-sudo/novanest-admin-suite" target="_blank" class="text-gray-500 hover:text-red-500 transition-colors">
                             <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
                         </a>
                     </div>
-                    <h3 class="text-xl text-white font-bold mb-3 group-hover:text-red-400 transition-colors">NovaNest Admin Suite</h3>
-                    <p class="text-xs text-gray-400 mb-6 flex-1">
+                    <h3 class="text-xl text-white font-bold mb-3 group-hover:text-red-400 transition-colors relative z-10">NovaNest Admin Suite</h3>
+                    <p class="text-xs text-gray-400 mb-6 flex-1 relative z-10">
                         Premium dropshipping store & admin suite. Handles dynamic storefronts, secure admin inventory management, and database tracking using localStorage and Supabase.
                     </p>
-                    <div class="flex flex-wrap gap-2 mt-auto border-t border-gray-800/50 pt-4">
+                    <div class="flex flex-wrap gap-2 mt-auto border-t border-gray-800/50 pt-4 relative z-10">
                         <span class="text-[10px] bg-black text-gray-400 px-2 py-1 rounded border border-gray-800">React</span>
                         <span class="text-[10px] bg-black text-gray-400 px-2 py-1 rounded border border-gray-800">Tailwind</span>
                         <span class="text-[10px] bg-black text-gray-400 px-2 py-1 rounded border border-gray-800">Supabase</span>
@@ -217,9 +228,195 @@
             </div>
         </section>
 
-        <!-- SECURITY CLEARANCES: CERTIFICATIONS -->
+        <!-- THE SYSTEMS MATRIX -->
         <section class="mb-24">
-            <div class="flex items-center gap-3 mb-10 border-b border-gray-800 pb-4">
+            <div class="flex items-center gap-3 mb-4 hover-trigger">
+                <i data-lucide="layout-grid" class="text-red-500 w-5 h-5"></i>
+                <h2 class="text-xl md:text-2xl font-bold uppercase tracking-widest text-white">The Systems Matrix</h2>
+            </div>
+            <p class="text-xs text-gray-500 mb-10 max-w-3xl hover-trigger">
+                Comprehensive archive of secondary deployments, active development environments, scripts, bots, and archived codebases extracted from GitHub records.
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 hover-trigger">
+                
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">PortLedger</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Ledger and portfolio management system.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        Web
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Project-Kavach</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Security and protective systems implementation.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        System
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Nexus-AI-Real-Estate</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">AI-powered real estate management platform.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        AI
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Shedole-Hospital</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Hospital management and operations dashboard.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        HealthTech
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Cosmic-Coders-Cypher</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Hackathon project submission for Cypher 4.0.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        Hackathon
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">GrowDesk-CRM</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Customer Relationship Management for local businesses.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        CRM
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">My-Clawdbot.ai</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">AI chatbot integration and automation.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        AI
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Ludo-Legends</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Interactive web-based Ludo game application.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        Gaming
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">ARIYA-app</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Application interface for ARIYA project.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        App
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Meditrack-Hospital-Ops</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Medical tracking and hospital operations.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        HealthTech
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Rasa-Kitchen</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Restaurant management and ordering system.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        Web
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Nebula-Astrology-Clone</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Clone of popular astrology application.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        Web
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Rishikesh-Pain-Clinic</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Clinic appointment and management system.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        HealthTech
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">IshabkitabNXS</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Financial calculation and bookkeeping tool.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        Finance
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Blurr</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Web application with visual effects processing.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        Web
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Kcet-Option-Entry</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Automated option entry script for KCET counseling.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        Script
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Free-LLM-API</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Open-source large language model API wrapper.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        API
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">Riya-OS</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Custom OS interface simulation or build.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        System
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-gray-900 hover:border-red-900 transition-colors p-4 group flex flex-col justify-between glow-card">
+                    <div class="relative z-10">
+                        <h4 class="text-white text-sm font-bold mb-2 group-hover:text-red-500 transition-colors">NobitaEarning_bot</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">Telegram bot for tracking earnings and tasks.</p>
+                    </div>
+                    <div class="text-[9px] text-red-900 font-mono uppercase border border-red-900/30 inline-block px-1 w-max relative z-10">
+                        Bot
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECURITY CLEARANCES -->
+        <section class="mb-24">
+            <div class="flex items-center gap-3 mb-10 border-b border-gray-800 pb-4 hover-trigger">
                 <i data-lucide="shield-check" class="text-red-500 w-5 h-5"></i>
                 <h2 class="text-xl md:text-2xl font-bold uppercase tracking-widest text-white">Security Clearances: Certifications</h2>
                 <div class="flex-1 h-px bg-gradient-to-r from-red-900/50 to-transparent ml-4"></div>
@@ -227,63 +424,58 @@
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Cert 1: Cypher 4.0 -->
-                <div class="bg-[#0a0a0a] border border-gray-800 hover:border-red-900/50 transition-colors p-4 group">
-                    <div class="w-full h-40 bg-gray-900 border border-gray-800 mb-4 overflow-hidden relative flex items-center justify-center">
+                <div class="bg-[#0a0a0a] border border-gray-800 hover:border-red-900/50 transition-colors p-4 group glow-card hover-trigger">
+                    <div class="w-full h-40 bg-gray-900 border border-gray-800 mb-4 overflow-hidden relative flex items-center justify-center z-10">
                         <p class="text-[10px] text-gray-600 absolute z-0 uppercase tracking-widest">Image Data Missing</p>
-                        <!-- ADD YOUR IMAGE HERE BY REPLACING THE SRC -->
                         <img src="19729d4d-5866-4b93-b2c7-4d9c21b8d2c6-1_all_13242.jpg" alt="Cypher 4.0 Certificate" class="w-full h-full object-cover relative z-10 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" onerror="this.style.display='none'">
                     </div>
-                    <h3 class="text-sm font-bold text-white mb-1">Cypher 4.0 Hackathon</h3>
-                    <p class="text-[10px] text-red-500 mb-2 uppercase tracking-wider">Rotaract Club of Atria IT</p>
-                    <p class="text-xs text-gray-500">Certificate of Participation in the tech hackathon organized on 9th-10th Oct 2026.</p>
+                    <h3 class="text-sm font-bold text-white mb-1 relative z-10">Cypher 4.0 Hackathon</h3>
+                    <p class="text-[10px] text-red-500 mb-2 uppercase tracking-wider relative z-10">Rotaract Club of Atria IT</p>
+                    <p class="text-xs text-gray-500 relative z-10">Certificate of Participation in the tech hackathon organized on 9th-10th Oct 2026.</p>
                 </div>
 
                 <!-- Cert 2: Unstop -->
-                <div class="bg-[#0a0a0a] border border-gray-800 hover:border-red-900/50 transition-colors p-4 group">
-                    <div class="w-full h-40 bg-gray-900 border border-gray-800 mb-4 overflow-hidden relative flex items-center justify-center">
+                <div class="bg-[#0a0a0a] border border-gray-800 hover:border-red-900/50 transition-colors p-4 group glow-card hover-trigger">
+                    <div class="w-full h-40 bg-gray-900 border border-gray-800 mb-4 overflow-hidden relative flex items-center justify-center z-10">
                         <p class="text-[10px] text-gray-600 absolute z-0 uppercase tracking-widest">Image Data Missing</p>
-                        <!-- ADD YOUR IMAGE HERE BY REPLACING THE SRC -->
                         <img src="81494.jpg" alt="Unstop Certificate" class="w-full h-full object-cover relative z-10 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" onerror="this.style.display='none'">
                     </div>
-                    <h3 class="text-sm font-bold text-white mb-1">Week-of-Wins</h3>
-                    <p class="text-[10px] text-red-500 mb-2 uppercase tracking-wider">Unstop (MVM Group)</p>
-                    <p class="text-xs text-gray-500">Certificate of Participation representing MVM Group of Institution.</p>
+                    <h3 class="text-sm font-bold text-white mb-1 relative z-10">Week-of-Wins</h3>
+                    <p class="text-[10px] text-red-500 mb-2 uppercase tracking-wider relative z-10">Unstop (MVM Group)</p>
+                    <p class="text-xs text-gray-500 relative z-10">Certificate of Participation representing MVM Group of Institution.</p>
                 </div>
 
                 <!-- Cert 3: CampusCrew -->
-                <div class="bg-[#0a0a0a] border border-gray-800 hover:border-red-900/50 transition-colors p-4 group">
-                    <div class="w-full h-40 bg-gray-900 border border-gray-800 mb-4 overflow-hidden relative flex items-center justify-center">
+                <div class="bg-[#0a0a0a] border border-gray-800 hover:border-red-900/50 transition-colors p-4 group glow-card hover-trigger">
+                    <div class="w-full h-40 bg-gray-900 border border-gray-800 mb-4 overflow-hidden relative flex items-center justify-center z-10">
                         <p class="text-[10px] text-gray-600 absolute z-0 uppercase tracking-widest">Image Data Missing</p>
-                        <!-- ADD YOUR IMAGE HERE BY REPLACING THE SRC -->
                         <img src="81493.jpg" alt="CampusCrew Certificate" class="w-full h-full object-cover relative z-10 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" onerror="this.style.display='none'">
                     </div>
-                    <h3 class="text-sm font-bold text-white mb-1">100K Milestone Honor</h3>
-                    <p class="text-[10px] text-red-500 mb-2 uppercase tracking-wider">CampusCrew</p>
-                    <p class="text-xs text-gray-500">Recognized as an integral part of the global student community in June 2026.</p>
+                    <h3 class="text-sm font-bold text-white mb-1 relative z-10">100K Milestone Honor</h3>
+                    <p class="text-[10px] text-red-500 mb-2 uppercase tracking-wider relative z-10">CampusCrew</p>
+                    <p class="text-xs text-gray-500 relative z-10">Recognized as an integral part of the global student community in June 2026.</p>
                 </div>
             </div>
         </section>
         
         <!-- EDUCATION / DATA LOG -->
         <section class="mb-20">
-             <div class="flex items-center gap-3 mb-8 border-b border-gray-800 pb-4">
+             <div class="flex items-center gap-3 mb-8 border-b border-gray-800 pb-4 hover-trigger">
                 <i data-lucide="database" class="text-red-500 w-5 h-5"></i>
                 <h2 class="text-xl md:text-2xl font-bold uppercase tracking-widest text-white">System Logs: Education</h2>
             </div>
             
-            <div class="space-y-4 border-l border-gray-800 ml-2 pl-6">
+            <div class="space-y-4 border-l border-gray-800 ml-2 pl-6 hover-trigger">
                 <div class="relative">
                     <div class="absolute -left-[29px] top-1 w-2 h-2 bg-red-600 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.8)]"></div>
                     <h3 class="text-sm font-bold text-white">B.E. Computer Science and Engineering</h3>
                     <p class="text-xs text-red-400 mb-1">Atria Institute of Technology | Current (1st Year, 1st Sem)</p>
                 </div>
-                
                 <div class="relative">
                     <div class="absolute -left-[29px] top-1 w-2 h-2 bg-gray-600 rounded-full"></div>
                     <h3 class="text-sm font-bold text-gray-300">Class 11-12</h3>
                     <p class="text-xs text-gray-500 mb-1">MVM Group of Institution</p>
                 </div>
-                
                 <div class="relative">
                     <div class="absolute -left-[29px] top-1 w-2 h-2 bg-gray-600 rounded-full"></div>
                     <h3 class="text-sm font-bold text-gray-300">Class 1-10</h3>
@@ -293,19 +485,19 @@
         </section>
 
         <!-- FOOTER / CONTACT -->
-        <footer class="border-t border-red-900/30 pt-8 mt-12 pb-12 flex flex-col md:flex-row justify-between items-center gap-6 text-xs relative z-10">
+        <footer class="border-t border-red-900/30 pt-8 mt-12 pb-12 flex flex-col md:flex-row justify-between items-center gap-6 text-xs relative z-10 hover-trigger">
             <div class="text-gray-500 flex items-center gap-2">
                 <span class="text-red-500">root@soham:~$</span> 
-                <span>Let's Architect Something Extraordinary_</span>
+                <span class="typing-container">Let's Architect Something Extraordinary_</span>
             </div>
             <div class="flex flex-wrap gap-6 text-gray-400 justify-center">
-                <a href="mailto:sp5960701@gmail.com" class="hover:text-red-500 transition-colors flex items-center gap-1">
+                <a href="mailto:sp5960701@gmail.com" class="hover:text-red-500 transition-colors flex items-center gap-1 hover-trigger">
                     <i data-lucide="mail" class="w-3 h-3"></i> sp5960701@gmail.com
                 </a>
-                <a href="tel:+919019073881" class="hover:text-red-500 transition-colors flex items-center gap-1">
+                <a href="tel:+919019073881" class="hover:text-red-500 transition-colors flex items-center gap-1 hover-trigger">
                     <i data-lucide="phone" class="w-3 h-3"></i> +91 9019073881
                 </a>
-                <a href="https://github.com/nobitabot-sudo" target="_blank" class="hover:text-red-500 transition-colors flex items-center gap-1">
+                <a href="https://github.com/nobitabot-sudo" target="_blank" class="hover:text-red-500 transition-colors flex items-center gap-1 hover-trigger">
                     <i data-lucide="github" class="w-3 h-3"></i> nobitabot-sudo
                 </a>
             </div>
@@ -314,6 +506,36 @@
 
     <script>
         lucide.createIcons();
+
+        // Custom Cursor Logic
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+        
+        document.addEventListener('mousemove', (e) => {
+            if (cursor && cursorDot) {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                cursorDot.style.left = e.clientX + 'px';
+                cursorDot.style.top = e.clientY + 'px';
+            }
+        });
+
+        // Add hover effect to interactive elements
+        document.querySelectorAll('a, button, .hover-trigger, .group').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor && cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor && cursor.classList.remove('hover'));
+        });
+
+        // Glow Card Mouse Tracking
+        document.querySelectorAll('.glow-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
     </script>
 </body>
 </html>
